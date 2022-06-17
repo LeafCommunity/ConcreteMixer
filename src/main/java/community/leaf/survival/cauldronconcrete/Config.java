@@ -61,14 +61,23 @@ public class Config extends YamlDataFile
             
             if (isUpdated())
             {
-                if (outdated && existing.greaterThan(zero))
+                if (outdated)
                 {
-                    plugin.getLogger().info("Updating config...");
-                    backupThenSave(plugin.directory().resolve("backups"), "v" + existing);
+                    if (existing.greaterThan(zero))
+                    {
+                        plugin.getLogger().info("Updating config...");
+                        backupThenSave(plugin.directory().resolve("backups"), "v" + existing);
+                    }
+                    else
+                    {
+                        plugin.getLogger().info("Generating config...");
+                        save();
+                    }
                 }
                 else
                 {
-                    save();
+                    plugin.getLogger().info("Adding missing config values...");
+                    backupThenSave(plugin.directory().resolve("backups"), "v" + existing + "-missing-values");
                 }
             }
         });
