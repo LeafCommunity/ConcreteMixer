@@ -1,0 +1,8 @@
+main: community.leaf.survival.cauldronconcrete.CauldronConcretePlugin
+name: ${project.name}
+version: ${project.version}
+api-version: 1.18
+
+authors: [RezzedUp]
+description: ${project.description}
+website: ${project.url}
