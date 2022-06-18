@@ -53,15 +53,14 @@ public class EffectHandler
     
     public void splashSoundEffect(Location location)
     {
-        if (isEffectEnabled(Config.SPLASH_SOUND_EFFECT))
-        {
-            sound(
-                location,
-                Config.SPLASH_SOUND_EFFECT_NAME,
-                Config.SPLASH_SOUND_EFFECT_VOLUME,
-                Config.SPLASH_SOUND_EFFECT_PITCH
-            );
-        }
+        if (!isEffectEnabled(Config.SPLASH_SOUND_EFFECT)) { return; }
+        
+        sound(
+            location,
+            Config.SPLASH_SOUND_EFFECT_NAME,
+            Config.SPLASH_SOUND_EFFECT_VOLUME,
+            Config.SPLASH_SOUND_EFFECT_PITCH
+        );
     }
     
     public void cauldronSplashParticles(Block cauldron)
@@ -77,9 +76,9 @@ public class EffectHandler
             cauldron.getLocation().getBlockY() + waterHeight,
             cauldron.getLocation().getBlockZ() + .5,
             8,
-            .15,
-            .05,
-            .15
+            0.15,
+            0.05,
+            0.15
         );
     }
     
@@ -93,10 +92,10 @@ public class EffectHandler
             cauldron.getLocation().getBlockY() + 1,
             cauldron.getLocation().getBlockZ() + .5,
             3,
-            .1,
-            0,
-            .1,
-            .03
+            0.1,
+            0.0,
+            0.1,
+            0.03
         );
     }
     

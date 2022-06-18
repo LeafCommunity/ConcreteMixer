@@ -7,6 +7,7 @@
  */
 package community.leaf.survival.cauldronconcrete;
 
+import com.rezzedup.util.constants.types.Cast;
 import community.leaf.eventful.bukkit.CancellationPolicy;
 import community.leaf.eventful.bukkit.ListenerOrder;
 import community.leaf.eventful.bukkit.annotations.CancelledEvents;
@@ -14,10 +15,12 @@ import community.leaf.eventful.bukkit.annotations.EventListener;
 import community.leaf.tasks.TaskContext;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,7 +45,7 @@ public class CauldronPowderDropListener implements Listener
     
     @EventListener
     @CancelledEvents(CancellationPolicy.REJECT)
-    public void onPlayerDrop(PlayerDropItemEvent event)
+    public void onPlayerDropItem(PlayerDropItemEvent event)
     {
         Player player = event.getPlayer();
         if (!plugin.permissions().allowsConvertingConcretePowder(player)) { return; }
@@ -61,6 +64,27 @@ public class CauldronPowderDropListener implements Listener
         {
             transformConcretePowder(event.getTarget());
         }
+    }
+    
+    @EventListener(ListenerOrder.MONITOR)
+    @CancelledEvents(CancellationPolicy.REJECT)
+    public void onCauldronLevelChange(CauldronLevelChangeEvent event)
+    {
+        if (!(event.getEntity() instanceof Player player)) { return; }
+        if (!plugin.permissions().allowsConvertingConcretePowder(player)) { return; }
+        
+        Block block = event.getBlock();
+        BlockData pre = block.getBlockData();
+        BlockData post = event.getNewState().getBlockData();
+        
+        if (pre.getMaterial() != Material.CAULDRON || post.getMaterial() != Material.WATER_CAULDRON) { return; }
+        
+        block.getWorld().getNearbyEntities(block.getBoundingBox()).stream()
+            .flatMap(entity -> Cast.as(Item.class, entity).stream())
+            .filter(item -> Concrete.ofPowder(item.getItemStack().getType()).isPresent())
+            .filter(item -> !transformationTasksByItemUuid.containsKey(item.getUniqueId()))
+            .limit(64L)
+            .forEach(this::transformConcretePowder);
     }
     
     private boolean cancelTransform(Item item)
