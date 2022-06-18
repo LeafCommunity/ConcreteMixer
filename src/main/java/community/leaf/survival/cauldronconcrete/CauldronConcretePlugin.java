@@ -9,29 +9,34 @@ package community.leaf.survival.cauldronconcrete;
 
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
+import community.leaf.tasks.bukkit.BukkitTaskSource;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
 
-public class CauldronConcretePlugin extends JavaPlugin implements BukkitEventSource
+public class CauldronConcretePlugin extends JavaPlugin implements BukkitEventSource, BukkitTaskSource
 {
     private final Version version;
     private final Path directory;
     private final Config config;
+    private final PermissionHandler permissions;
+    private final EffectHandler effects;
     
     public CauldronConcretePlugin()
     {
         this.version = Version.valueOf(getDescription().getVersion());
         this.directory = getDataFolder().toPath();
         this.config = new Config(this);
+        this.permissions = new PermissionHandler(config);
+        this.effects = new EffectHandler(config);
     }
     
     @Override
     public void onEnable()
     {
         config.reload();
-        
+        events().register(new CauldronPowderDropListener(this));
     }
     
     @Override
@@ -42,4 +47,8 @@ public class CauldronConcretePlugin extends JavaPlugin implements BukkitEventSou
     public Path directory() { return directory; }
     
     public Config config() { return config; }
+    
+    public PermissionHandler permissions() { return permissions; }
+    
+    public EffectHandler effects() { return effects; }
 }

@@ -16,6 +16,7 @@ import community.leaf.configvalues.bukkit.YamlAccessor;
 import community.leaf.configvalues.bukkit.YamlValue;
 import community.leaf.configvalues.bukkit.data.Load;
 import community.leaf.configvalues.bukkit.data.YamlDataFile;
+import org.bukkit.Sound;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class Config extends YamlDataFile
 {
     public static final YamlValue<Version> VERSION =
         YamlValue.of(
-            "version",
+            "meta.config-version",
             YamlAccessor.of(Adapter.of(
                 o -> {
                     try { return Optional.of(Version.valueOf(String.valueOf(o))); }
@@ -35,8 +36,44 @@ public class Config extends YamlDataFile
         )
         .maybe();
     
-    public static final DefaultYamlValue<Boolean> ENABLE_SPLASH_PARTICLES =
-        YamlValue.ofBoolean("splash-effect.enable-particles").defaults(true);
+    public static final DefaultYamlValue<Boolean> REQUIRE_PERMISSION =
+        YamlValue.ofBoolean("cauldron.require-permission-node").defaults(false);
+    
+    public static final DefaultYamlValue<Boolean> LOWER_WATER_LEVEL =
+        YamlValue.ofBoolean("cauldron.lower-water-level").defaults(true);
+    
+    public static final DefaultYamlValue<Boolean> ENABLE_EFFECTS =
+        YamlValue.ofBoolean("effects.enabled").defaults(true);
+    
+    public static final DefaultYamlValue<Boolean> SPLASH_PARTICLES_EFFECT =
+        YamlValue.ofBoolean("effects.splash.particles.enabled").defaults(true);
+    
+    public static final DefaultYamlValue<Boolean> SPLASH_SOUND_EFFECT =
+        YamlValue.ofBoolean("effects.splash.sound.enabled").defaults(true);
+    
+    public static final DefaultYamlValue<Sound> SPLASH_SOUND_EFFECT_NAME =
+        YamlValue.ofSound("effects.splash.sound.name").defaults(Sound.ENTITY_GENERIC_SPLASH);
+    
+    public static final DefaultYamlValue<Float> SPLASH_SOUND_EFFECT_VOLUME =
+        YamlValue.ofFloat("effects.splash.sound.volume").defaults(0.75F);
+    
+    public static final DefaultYamlValue<Float> SPLASH_SOUND_EFFECT_PITCH =
+        YamlValue.ofFloat("effects.splash.sound.pitch").defaults(1F);
+    
+    public static final DefaultYamlValue<Boolean> TRANSFORM_PARTICLES_EFFECT =
+        YamlValue.ofBoolean("effects.transform.particles.enabled").defaults(true);
+    
+    public static final DefaultYamlValue<Boolean> TRANSFORM_SOUND_EFFECT =
+        YamlValue.ofBoolean("effects.transform.sound.enabled").defaults(true);
+    
+    public static final DefaultYamlValue<Sound> TRANSFORM_SOUND_EFFECT_NAME =
+        YamlValue.ofSound("effects.transform.sound.name").defaults(Sound.BLOCK_FIRE_EXTINGUISH);
+    
+    public static final DefaultYamlValue<Float> TRANSFORM_SOUND_EFFECT_VOLUME =
+        YamlValue.ofFloat("effects.transform.sound.volume").defaults(0.65F);
+    
+    public static final DefaultYamlValue<Float> TRANSFORM_SOUND_EFFECT_PITCH =
+        YamlValue.ofFloat("effects.transform.sound.pitch").defaults(1.25F);
     
     @AggregatedResult
     private static final List<YamlValue<?>> VALUES =
