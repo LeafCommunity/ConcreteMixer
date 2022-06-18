@@ -68,13 +68,13 @@ public class EffectHandler
         if (!isEffectEnabled(Config.SPLASH_PARTICLES_EFFECT)) { return; }
         if (cauldron.getBlockData().getMaterial() != Material.WATER_CAULDRON) { return; }
         
-        double waterHeight = .9 - (.1875 * (3 - ((Levelled) cauldron.getBlockData()).getLevel()));
+        double waterHeight = 0.9 - (0.1875 * (3 - ((Levelled) cauldron.getBlockData()).getLevel()));
         
         cauldron.getWorld().spawnParticle(
             Particle.WATER_SPLASH,
-            cauldron.getLocation().getBlockX() + .5,
+            cauldron.getLocation().getBlockX() + 0.5,
             cauldron.getLocation().getBlockY() + waterHeight,
-            cauldron.getLocation().getBlockZ() + .5,
+            cauldron.getLocation().getBlockZ() + 0.5,
             8,
             0.15,
             0.05,
@@ -88,9 +88,9 @@ public class EffectHandler
     
         cauldron.getWorld().spawnParticle(
             Particle.EXPLOSION_NORMAL,
-            cauldron.getLocation().getBlockX() + .5,
-            cauldron.getLocation().getBlockY() + 1,
-            cauldron.getLocation().getBlockZ() + .5,
+            cauldron.getLocation().getBlockX() + 0.5,
+            cauldron.getLocation().getBlockY() + 1.0,
+            cauldron.getLocation().getBlockZ() + 0.5,
             3,
             0.1,
             0.0,

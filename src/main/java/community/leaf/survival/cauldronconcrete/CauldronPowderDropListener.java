@@ -60,7 +60,7 @@ public class CauldronPowderDropListener implements Listener
     @CancelledEvents(CancellationPolicy.REJECT)
     public void onItemMerge(ItemMergeEvent event)
     {
-        if (cancelTransform(event.getTarget()) || cancelTransform(event.getEntity()))
+        if (cancelExistingTransformation(event.getTarget()) || cancelExistingTransformation(event.getEntity()))
         {
             transformConcretePowder(event.getTarget());
         }
@@ -87,7 +87,7 @@ public class CauldronPowderDropListener implements Listener
             .forEach(this::transformConcretePowder);
     }
     
-    private boolean cancelTransform(Item item)
+    private boolean cancelExistingTransformation(Item item)
     {
         @NullOr TaskContext<BukkitTask> task =
             transformationTasksByItemUuid.remove(item.getUniqueId());
