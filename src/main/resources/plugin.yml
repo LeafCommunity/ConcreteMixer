@@ -1,7 +1,7 @@
-main: community.leaf.survival.cauldronconcrete.CauldronConcretePlugin
+main: community.leaf.survival.cementmixer.CementMixerPlugin
 name: ${project.name}
 version: ${project.version}
-api-version: 1.18
+api-version: 1.13
 
 authors: [RezzedUp]
 description: ${project.description}

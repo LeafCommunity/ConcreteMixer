@@ -5,12 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>community.leaf.survival</groupId>
-  <artifactId>cauldronconcrete</artifactId>
+  <artifactId>cementmixer</artifactId>
   <version>0.0.1</version>
   
-  <name>CauldronConcrete</name>
+  <name>CementMixer</name>
   <inceptionYear>2022</inceptionYear>
-  <url>https://github.com/LeafCommunity/CauldronConcrete</url>
+  <url>https://github.com/LeafCommunity/CementMixer</url>
   <description>Throw concrete powder into a cauldron, get concrete!</description>
   
   <properties>
@@ -20,12 +20,12 @@
     <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   
-    <shade.relocation>community.leaf.survival.cauldronconcrete.shaded</shade.relocation>
+    <shade.relocation>community.leaf.survival.cementmixer.shaded</shade.relocation>
   
     <!-- License headers (uncomment build timestamp in 2023) -->
     <license.header.year>${project.inceptionYear}<!---${maven.build.timestamp}--></license.header.year>
     <license.header.owner>RezzedUp and Contributors</license.header.owner>
-    <license.header.url>https://github.com/LeafCommunity/CauldronConcrete</license.header.url>
+    <license.header.url>https://github.com/LeafCommunity/CementMixer</license.header.url>
   </properties>
 
   <repositories>
@@ -107,8 +107,8 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.3.0</version>
         <configuration>
-          <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
-          </dependencyReducedPomLocation>
+          <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+          <minimizeJar>true</minimizeJar>
           <relocations>
             <relocation>
               <pattern>com.github</pattern>
