@@ -1,4 +1,4 @@
-main: community.leaf.survival.cementmixer.CementMixerPlugin
+main: community.leaf.survival.concretemixer.ConcreteMixerPlugin
 name: ${project.name}
 version: ${project.version}
 api-version: 1.13

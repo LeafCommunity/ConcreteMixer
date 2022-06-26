@@ -1,11 +1,11 @@
 /*
- * Copyright © 2022, RezzedUp and Contributors <https://github.com/LeafCommunity/CementMixer>
+ * Copyright © 2022, RezzedUp and Contributors <https://github.com/LeafCommunity/ConcreteMixer>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package community.leaf.survival.cementmixer;
+package community.leaf.survival.concretemixer;
 
 import com.rezzedup.util.constants.types.Cast;
 import community.leaf.eventful.bukkit.CancellationPolicy;
@@ -36,9 +36,9 @@ public class CauldronPowderDropListener implements Listener
 {
     private final Map<UUID, TaskContext<BukkitTask>> transformationTasksByItemUuid = new HashMap<>();
     
-    private final CementMixerPlugin plugin;
+    private final ConcreteMixerPlugin plugin;
     
-    public CauldronPowderDropListener(CementMixerPlugin plugin)
+    public CauldronPowderDropListener(ConcreteMixerPlugin plugin)
     {
         this.plugin = plugin;
     }

@@ -1,11 +1,11 @@
 /*
- * Copyright © 2022, RezzedUp and Contributors <https://github.com/LeafCommunity/CementMixer>
+ * Copyright © 2022, RezzedUp and Contributors <https://github.com/LeafCommunity/ConcreteMixer>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package community.leaf.survival.cementmixer;
+package community.leaf.survival.concretemixer;
 
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
 
-public class CementMixerPlugin extends JavaPlugin implements BukkitEventSource, BukkitTaskSource
+public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource, BukkitTaskSource
 {
     private final Version version;
     private final Path directory;
@@ -23,7 +23,7 @@ public class CementMixerPlugin extends JavaPlugin implements BukkitEventSource, 
     private final PermissionHandler permissions;
     private final EffectHandler effects;
     
-    public CementMixerPlugin()
+    public ConcreteMixerPlugin()
     {
         this.version = Version.valueOf(getDescription().getVersion());
         this.directory = getDataFolder().toPath();

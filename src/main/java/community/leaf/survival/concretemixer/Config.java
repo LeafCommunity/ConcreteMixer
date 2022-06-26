@@ -1,11 +1,11 @@
 /*
- * Copyright © 2022, RezzedUp and Contributors <https://github.com/LeafCommunity/CementMixer>
+ * Copyright © 2022, RezzedUp and Contributors <https://github.com/LeafCommunity/ConcreteMixer>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package community.leaf.survival.cementmixer;
+package community.leaf.survival.concretemixer;
 
 import com.github.zafarkhaja.semver.Version;
 import com.rezzedup.util.constants.Aggregates;
@@ -79,7 +79,7 @@ public class Config extends YamlDataFile
     private static final List<YamlValue<?>> VALUES =
         Aggregates.fromThisClass().constantsOfType(YamlValue.type()).toList();
     
-    public Config(CementMixerPlugin plugin)
+    public Config(ConcreteMixerPlugin plugin)
     {
         super(plugin.directory(), "config.yml", Load.LATER);
         
