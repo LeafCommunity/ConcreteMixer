@@ -81,7 +81,7 @@ public class Config extends YamlDataFile
     
     public Config(ConcreteMixerPlugin plugin)
     {
-        super(plugin.directory(), "config.yml", Load.LATER);
+        super(plugin.directory(), "config.yml", Load.NOW);
         
         reloadsWith(() ->
         {

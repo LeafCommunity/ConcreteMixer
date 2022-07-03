@@ -9,53 +9,49 @@ package community.leaf.survival.concretemixer;
 
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
-import community.leaf.eventful.bukkit.ListenerOrder;
 import community.leaf.tasks.bukkit.BukkitTaskSource;
-import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.nio.file.Path;
 
 public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource, BukkitTaskSource
 {
-    private final Version version;
-    private final Path directory;
-    private final Config config;
-    private final PermissionHandler permissions;
-    private final EffectHandler effects;
-    
-    public ConcreteMixerPlugin()
-    {
-        this.version = Version.valueOf(getDescription().getVersion());
-        this.directory = getDataFolder().toPath();
-        this.config = new Config(this);
-        this.permissions = new PermissionHandler(config);
-        this.effects = new EffectHandler(config);
-    }
+    private @NullOr Version version;
+    private @NullOr Path directory;
+    private @NullOr Config config;
+    private @NullOr PermissionHandler permissions;
+    private @NullOr EffectHandler effects;
     
     @Override
     public void onEnable()
     {
-        config.reload();
-    
-        events().on(CauldronLevelChangeEvent.class, ListenerOrder.LAST, (event) -> {
-            if (event instanceof WaterCauldron.LevelChangeTestEvent test) { test.complete(); }
-        });
-    
+        this.version = Version.valueOf(getDescription().getVersion());
+        this.directory = getDataFolder().toPath();
+        this.config = new Config(this);
+        this.effects = new EffectHandler(config);
+        this.permissions = new PermissionHandler(this);
+        
         events().register(new CauldronPowderDropListener(this));
+    }
+    
+    private static <T> T initialized(@NullOr T thing)
+    {
+        if (thing != null) { return thing; }
+        throw new IllegalStateException("Not initialized.");
     }
     
     @Override
     public Plugin plugin() { return this; }
     
-    public Version version() { return version; }
+    public Version version() { return initialized(version); }
     
-    public Path directory() { return directory; }
+    public Path directory() { return initialized(directory); }
     
-    public Config config() { return config; }
+    public Config config() { return initialized(config); }
     
-    public PermissionHandler permissions() { return permissions; }
+    public EffectHandler effects() { return initialized(effects); }
     
-    public EffectHandler effects() { return effects; }
+    public PermissionHandler permissions() { return initialized(permissions); }
 }

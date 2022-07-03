@@ -7,19 +7,41 @@
  */
 package community.leaf.survival.concretemixer;
 
+import community.leaf.survival.concretemixer.hooks.CauldronAccessHook;
+import community.leaf.survival.concretemixer.hooks.GriefPreventionCauldronAccessHook;
+import community.leaf.survival.concretemixer.hooks.UniversalCauldronAccessHook;
+import community.leaf.survival.concretemixer.hooks.WorldGuardCauldronAccessHook;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class PermissionHandler
 {
-    private final Config config;
+    private final Set<CauldronAccessHook> cauldronAccessHooks = new LinkedHashSet<>();
     
-    public PermissionHandler(Config config)
+    private final ConcreteMixerPlugin plugin;
+    
+    public PermissionHandler(ConcreteMixerPlugin plugin)
     {
-        this.config = config;
+        this.plugin = plugin;
+        
+        cauldronAccessHooks.add(new UniversalCauldronAccessHook(plugin));
+        cauldronAccessHooks.add(new GriefPreventionCauldronAccessHook(plugin));
+        cauldronAccessHooks.add(new WorldGuardCauldronAccessHook(plugin));
     }
     
     public boolean allowsConvertingConcretePowder(Permissible permissible)
     {
-        return !config.getOrDefault(Config.REQUIRE_PERMISSION) || permissible.hasPermission("cauldronconcrete.use");
+        return !plugin.config().getOrDefault(Config.REQUIRE_PERMISSION) || permissible.hasPermission("cauldronconcrete.use");
+    }
+    
+    public boolean canAccessCauldron(Player player, Block cauldron)
+    {
+        return cauldronAccessHooks.stream()
+            .filter(CauldronAccessHook::isEnabled)
+            .allMatch(hook -> hook.isCauldronAccessibleToPlayer(player, cauldron));
     }
 }

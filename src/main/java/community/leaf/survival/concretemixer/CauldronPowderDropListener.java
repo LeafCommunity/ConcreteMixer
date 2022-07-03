@@ -16,6 +16,7 @@ import community.leaf.tasks.TaskContext;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -132,10 +133,10 @@ public class CauldronPowderDropListener implements Listener
             item.getUniqueId(),
             plugin.sync().delay(2).ticks().every(2).ticks().run(task ->
             {
-                @NullOr WaterCauldron cauldron = WaterCauldron.of(item.getLocation().getBlock()).orElse(null);
+                Block cauldron =item.getLocation().getBlock();
                 
                 // Outside the cauldron, dropping in ... (or not)
-                if (cauldron == null)
+                if (cauldron.getType() != Material.WATER_CAULDRON)
                 {
                     iterations.outside++;
                     
@@ -147,13 +148,13 @@ public class CauldronPowderDropListener implements Listener
                 
                 // Inside the cauldron
                 iterations.inside++;
-                boolean waterLevelLowered = plugin.config().getOrDefault(Config.LOWER_WATER_LEVEL);
+                boolean lowerWaterLevel = plugin.config().getOrDefault(Config.LOWER_WATER_LEVEL);
                 
                 // Check if player is allowed to use this specific cauldron
                 // (only if water level gets lowered, since that could be considered griefing)
-                if (waterLevelLowered && entity(item.getThrower()) instanceof Player player)
+                if (lowerWaterLevel && entity(item.getThrower()) instanceof Player player)
                 {
-                    if (!cauldron.isUsableBy(player))
+                    if (!plugin.permissions().canAccessCauldron(player, cauldron))
                     {
                         cancel(item, task);
                         return;
@@ -168,10 +169,11 @@ public class CauldronPowderDropListener implements Listener
                 
                 if (iterations.inside < 15)
                 {
-                    plugin.effects().cauldronSplashParticles(cauldron.block());
+                    plugin.effects().cauldronSplashParticles(cauldron);
                     return;
                 }
                 
+                // Done with this task... it's finally time to transform the powder!
                 cancel(item, task);
                 
                 @NullOr Concrete concrete = Concrete.ofPowder(item.getItemStack().getType()).orElse(null);
@@ -184,9 +186,22 @@ public class CauldronPowderDropListener implements Listener
                 item.setVelocity(new Vector(0, 0.3, 0));
                 item.setPickupDelay(10);
                 
-                plugin.effects().concreteTransform(cauldron.block());
+                plugin.effects().concreteTransform(cauldron);
                 
-                if (waterLevelLowered) { cauldron.lowerWaterLevel(); }
+                if (!lowerWaterLevel) { return; }
+                if (!(cauldron.getBlockData() instanceof Levelled levelled)) { return; }
+                
+                int level = levelled.getLevel() - 1;
+    
+                if (level <= 0)
+                {
+                    cauldron.setType(Material.CAULDRON);
+                }
+                else
+                {
+                    levelled.setLevel(level);
+                    cauldron.setBlockData(levelled);
+                }
             })
         );
     }
