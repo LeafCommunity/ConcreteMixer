@@ -133,7 +133,7 @@ public class CauldronPowderDropListener implements Listener
             item.getUniqueId(),
             plugin.sync().delay(2).ticks().every(2).ticks().run(task ->
             {
-                Block cauldron =item.getLocation().getBlock();
+                Block cauldron = item.getLocation().getBlock();
                 
                 // Outside the cauldron, dropping in ... (or not)
                 if (cauldron.getType() != Material.WATER_CAULDRON)
