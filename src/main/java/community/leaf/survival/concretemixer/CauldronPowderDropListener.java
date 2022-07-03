@@ -16,7 +16,7 @@ import community.leaf.tasks.TaskContext;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -60,9 +60,15 @@ public class CauldronPowderDropListener implements Listener
     @CancelledEvents(CancellationPolicy.REJECT)
     public void onItemMerge(ItemMergeEvent event)
     {
-        if (cancelExistingTransformation(event.getTarget()) || cancelExistingTransformation(event.getEntity()))
+        Item aggregate = event.getTarget();
+        Item piece = event.getEntity();
+        
+        if (cancelExistingTransformation(aggregate) || cancelExistingTransformation(piece))
         {
-            transformConcretePowder(event.getTarget());
+            // Merge thrower information too.
+            if (aggregate.getThrower() == null) { aggregate.setThrower(piece.getThrower()); }
+            
+            transformConcretePowder(aggregate);
         }
     }
     
@@ -107,6 +113,11 @@ public class CauldronPowderDropListener implements Listener
         task.cancel();
     }
     
+    private @NullOr Entity entity(@NullOr UUID uuid)
+    {
+        return (uuid == null) ? null : plugin.getServer().getEntity(uuid);
+    }
+    
     private void transformConcretePowder(Item item)
     {
         class IterationCounter
@@ -121,26 +132,43 @@ public class CauldronPowderDropListener implements Listener
             item.getUniqueId(),
             plugin.sync().delay(2).ticks().every(2).ticks().run(task ->
             {
-                Block cauldron = item.getLocation().getBlock();
+                @NullOr WaterCauldron cauldron = WaterCauldron.of(item.getLocation().getBlock()).orElse(null);
                 
-                if (cauldron.getBlockData().getMaterial() != Material.WATER_CAULDRON)
+                // Outside the cauldron, dropping in ... (or not)
+                if (cauldron == null)
                 {
                     iterations.outside++;
+                    
+                    // Took too long to drop in, might not even be a cauldron nearby for all we know
                     if (iterations.outside > 20) { cancel(item, task); }
+                    
                     return;
                 }
                 
+                // Inside the cauldron
                 iterations.inside++;
+                boolean waterLevelLowered = plugin.config().getOrDefault(Config.LOWER_WATER_LEVEL);
+                
+                // Check if player is allowed to use this specific cauldron
+                // (only if water level gets lowered, since that could be considered griefing)
+                if (waterLevelLowered && entity(item.getThrower()) instanceof Player player)
+                {
+                    if (!cauldron.isUsableBy(player))
+                    {
+                        cancel(item, task);
+                        return;
+                    }
+                }
                 
                 if (iterations.inside == 1)
                 {
                     item.setPickupDelay(40);
-                    plugin.effects().splashSoundEffect(item.getLocation());
+                    plugin.effects().cauldronSplashSound(item.getLocation());
                 }
                 
                 if (iterations.inside < 15)
                 {
-                    plugin.effects().cauldronSplashParticles(cauldron);
+                    plugin.effects().cauldronSplashParticles(cauldron.block());
                     return;
                 }
                 
@@ -156,24 +184,11 @@ public class CauldronPowderDropListener implements Listener
                 item.setVelocity(new Vector(0, 0.3, 0));
                 item.setPickupDelay(10);
                 
-                plugin.effects().concreteTransformedParticles(cauldron);
-                plugin.effects().transformSoundEffect(cauldron.getLocation());
+                plugin.effects().concreteTransform(cauldron.block());
                 
-                if (!plugin.config().getOrDefault(Config.LOWER_WATER_LEVEL)) { return; }
-    
-                Levelled levelled = (Levelled) cauldron.getBlockData();
-                int level = levelled.getLevel() - 1;
-                
-                if (level <= 0)
-                {
-                    cauldron.setType(Material.CAULDRON);
-                }
-                else
-                {
-                    levelled.setLevel(level);
-                    cauldron.setBlockData(levelled);
-                }
+                if (waterLevelLowered) { cauldron.lowerWaterLevel(); }
             })
         );
     }
+    
 }

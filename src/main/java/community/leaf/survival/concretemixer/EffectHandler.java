@@ -51,7 +51,7 @@ public class EffectHandler
         );
     }
     
-    public void splashSoundEffect(Location location)
+    public void cauldronSplashSound(Location location)
     {
         if (!isEffectEnabled(Config.SPLASH_SOUND_EFFECT)) { return; }
         
@@ -66,7 +66,7 @@ public class EffectHandler
     public void cauldronSplashParticles(Block cauldron)
     {
         if (!isEffectEnabled(Config.SPLASH_PARTICLES_EFFECT)) { return; }
-        if (cauldron.getBlockData().getMaterial() != Material.WATER_CAULDRON) { return; }
+        if (cauldron.getType() != Material.WATER_CAULDRON) { return; }
         
         double waterHeight = 0.9 - (0.1875 * (3 - ((Levelled) cauldron.getBlockData()).getLevel()));
         
@@ -82,7 +82,7 @@ public class EffectHandler
         );
     }
     
-    public void concreteTransformedParticles(Block cauldron)
+    public void concreteTransformParticles(Block cauldron)
     {
         if (!isEffectEnabled(Config.TRANSFORM_PARTICLES_EFFECT)) { return; }
     
@@ -99,7 +99,7 @@ public class EffectHandler
         );
     }
     
-    public void transformSoundEffect(Location location)
+    public void concreteTransformSound(Location location)
     {
         if (!isEffectEnabled(Config.TRANSFORM_SOUND_EFFECT)) { return; }
         
@@ -109,5 +109,11 @@ public class EffectHandler
             Config.TRANSFORM_SOUND_EFFECT_VOLUME,
             Config.TRANSFORM_SOUND_EFFECT_PITCH
         );
+    }
+    
+    public void concreteTransform(Block cauldron)
+    {
+        concreteTransformParticles(cauldron);
+        concreteTransformSound(cauldron.getLocation());
     }
 }

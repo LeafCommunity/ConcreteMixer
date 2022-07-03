@@ -9,7 +9,9 @@ package community.leaf.survival.concretemixer;
 
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
+import community.leaf.eventful.bukkit.ListenerOrder;
 import community.leaf.tasks.bukkit.BukkitTaskSource;
+import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,6 +38,11 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
     public void onEnable()
     {
         config.reload();
+    
+        events().on(CauldronLevelChangeEvent.class, ListenerOrder.LAST, (event) -> {
+            if (event instanceof WaterCauldron.LevelChangeTestEvent test) { test.complete(); }
+        });
+    
         events().register(new CauldronPowderDropListener(this));
     }
     
