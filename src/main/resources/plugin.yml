@@ -2,7 +2,7 @@ main: community.leaf.survival.concretemixer.ConcreteMixerPlugin
 name: ${project.name}
 version: ${project.version}
 api-version: 1.13
-softdepend: [GriefPrevention, WorldGuard]
+softdepend: [GriefPrevention]
 
 authors: [RezzedUp]
 description: ${project.description}

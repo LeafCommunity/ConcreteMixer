@@ -10,7 +10,6 @@ package community.leaf.survival.concretemixer;
 import community.leaf.survival.concretemixer.hooks.CauldronAccessHook;
 import community.leaf.survival.concretemixer.hooks.GriefPreventionCauldronAccessHook;
 import community.leaf.survival.concretemixer.hooks.UniversalCauldronAccessHook;
-import community.leaf.survival.concretemixer.hooks.WorldGuardCauldronAccessHook;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
@@ -30,7 +29,6 @@ public class PermissionHandler
         
         cauldronAccessHooks.add(new UniversalCauldronAccessHook(plugin));
         cauldronAccessHooks.add(new GriefPreventionCauldronAccessHook(plugin));
-        cauldronAccessHooks.add(new WorldGuardCauldronAccessHook(plugin));
     }
     
     public boolean allowsConvertingConcretePowder(Permissible permissible)
