@@ -123,11 +123,13 @@
               <shadedPattern>${shade.relocation}.com.github</shadedPattern>
             </relocation>
             <relocation>
+              <!-- Keep plugin classes exactly where they are... -->
+              <pattern>community.leaf.survival</pattern>
+              <shadedPattern>community.leaf.survival</shadedPattern>
+            </relocation>
+            <relocation>
               <pattern>community.leaf</pattern>
               <shadedPattern>${shade.relocation}.community.leaf</shadedPattern>
-              <excludes>
-                <exclude>community.leaf.survival.*</exclude>
-              </excludes>
             </relocation>
             <relocation>
               <pattern>com.rezzedup</pattern>
