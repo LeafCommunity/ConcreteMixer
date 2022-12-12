@@ -7,3 +7,9 @@ softdepend: [GriefPrevention]
 authors: [RezzedUp]
 description: ${project.description}
 website: ${project.url}
+
+permissions:
+  concretemixer.cauldrons:
+    description: |
+      Allows players to use cauldrons to create concrete.
+      Only useful if configured to require permission to do so.

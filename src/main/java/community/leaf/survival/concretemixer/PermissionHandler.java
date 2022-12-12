@@ -33,7 +33,7 @@ public class PermissionHandler
     
     public boolean allowsConvertingConcretePowder(Permissible permissible)
     {
-        return !plugin.config().getOrDefault(Config.REQUIRE_PERMISSION) || permissible.hasPermission("cauldronconcrete.use");
+        return !plugin.config().getOrDefault(Config.REQUIRE_PERMISSION) || permissible.hasPermission("concretemixer.cauldrons");
     }
     
     public boolean canAccessCauldron(Player player, Block cauldron)

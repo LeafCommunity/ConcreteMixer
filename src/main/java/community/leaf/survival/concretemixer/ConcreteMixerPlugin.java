@@ -10,6 +10,7 @@ package community.leaf.survival.concretemixer;
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
 import community.leaf.tasks.bukkit.BukkitTaskSource;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.tlinkowski.annotation.basic.NullOr;
@@ -34,6 +35,11 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
         this.permissions = new PermissionHandler(this);
         
         events().register(new CauldronPowderDropListener(this));
+        
+        if (config.getOrDefault(Config.METRICS))
+        {
+            new Metrics(this, 15590);
+        }
     }
     
     private static <T> T initialized(@NullOr T thing)

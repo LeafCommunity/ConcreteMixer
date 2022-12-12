@@ -34,16 +34,40 @@ public class Config extends YamlDataFile
                 version -> Optional.of(version.toString())
             ))
         )
+        .comments(
+            "Please do not modify this value (it's used to update the config)."
+        )
         .maybe();
     
+    public static final DefaultYamlValue<Boolean> METRICS =
+        YamlValue.ofBoolean("metrics.enabled")
+            .comments(
+                "May we collect anonymous usage metrics?",
+                "https://bstats.org/plugin/bukkit/ConcreteMixer/15590"
+            )
+            .defaults(true);
+    
     public static final DefaultYamlValue<Boolean> REQUIRE_PERMISSION =
-        YamlValue.ofBoolean("cauldron.require-permission-node").defaults(false);
+        YamlValue.ofBoolean("cauldrons.require-permission-node")
+            .comments(
+                "If enabled, players must have access to the 'concretemixer.cauldrons'",
+                "permission node in order to create concrete with cauldrons."
+            )
+            .defaults(false);
     
     public static final DefaultYamlValue<Boolean> LOWER_WATER_LEVEL =
-        YamlValue.ofBoolean("cauldron.lower-water-level").defaults(true);
+        YamlValue.ofBoolean("cauldrons.lower-water-level")
+            .comments(
+                "Should the cauldron's water level be lowered after successfully creating concrete?"
+            )
+            .defaults(true);
     
     public static final DefaultYamlValue<Boolean> ENABLE_EFFECTS =
-        YamlValue.ofBoolean("effects.enabled").defaults(true);
+        YamlValue.ofBoolean("effects.enabled")
+            .comments(
+                "Toggle all effects."
+            )
+            .defaults(true);
     
     public static final DefaultYamlValue<Boolean> SPLASH_PARTICLES_EFFECT =
         YamlValue.ofBoolean("effects.splash.particles.enabled").defaults(true);
