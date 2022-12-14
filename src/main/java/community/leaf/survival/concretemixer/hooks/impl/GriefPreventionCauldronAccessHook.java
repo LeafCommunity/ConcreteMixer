@@ -5,10 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package community.leaf.survival.concretemixer.hooks;
+package community.leaf.survival.concretemixer.hooks.impl;
 
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.survival.concretemixer.ConcreteMixerPlugin;
+import community.leaf.survival.concretemixer.hooks.CauldronAccessHook;
 import community.leaf.survival.concretemixer.util.Versions;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
@@ -48,7 +49,7 @@ public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
             
             if (griefPreventionVersion.lessThan(MINIMUM_VERSION))
             {
-                plugin.getLogger().warning("Your version of GriefPrevention is outdated.");
+                plugin.getLogger().warning("Your version of GriefPrevention is out of date.");
                 plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
             }
         }

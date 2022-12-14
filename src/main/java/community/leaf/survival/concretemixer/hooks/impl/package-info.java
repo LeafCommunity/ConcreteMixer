@@ -5,12 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package community.leaf.survival.concretemixer.hooks;
+@NonNullPackage
+package community.leaf.survival.concretemixer.hooks.impl;
 
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
-public interface CauldronAccessHook extends Hook
-{
-    boolean isCauldronAccessibleToPlayer(Player player, Block cauldron);
-}
+import pl.tlinkowski.annotation.basic.NonNullPackage;

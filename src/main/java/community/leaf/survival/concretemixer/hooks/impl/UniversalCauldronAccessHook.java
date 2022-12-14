@@ -5,10 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package community.leaf.survival.concretemixer.hooks;
+package community.leaf.survival.concretemixer.hooks.impl;
 
 import community.leaf.eventful.bukkit.ListenerOrder;
 import community.leaf.survival.concretemixer.ConcreteMixerPlugin;
+import community.leaf.survival.concretemixer.hooks.CauldronAccessHook;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.CauldronLevelChangeEvent;

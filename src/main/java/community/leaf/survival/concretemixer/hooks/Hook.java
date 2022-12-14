@@ -7,10 +7,7 @@
  */
 package community.leaf.survival.concretemixer.hooks;
 
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
-public interface CauldronAccessHook extends Hook
+public interface Hook
 {
-    boolean isCauldronAccessibleToPlayer(Player player, Block cauldron);
+    boolean isEnabled();
 }

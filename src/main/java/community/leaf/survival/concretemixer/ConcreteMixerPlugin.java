@@ -9,6 +9,7 @@ package community.leaf.survival.concretemixer;
 
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
+import community.leaf.survival.concretemixer.hooks.HookHandler;
 import community.leaf.tasks.bukkit.BukkitTaskSource;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.Plugin;
@@ -22,8 +23,9 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
     private @NullOr Version version;
     private @NullOr Path directory;
     private @NullOr Config config;
-    private @NullOr PermissionHandler permissions;
     private @NullOr EffectHandler effects;
+    private @NullOr HookHandler hooks;
+    private @NullOr PermissionHandler permissions;
     
     @Override
     public void onEnable()
@@ -32,6 +34,7 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
         this.directory = getDataFolder().toPath();
         this.config = new Config(this);
         this.effects = new EffectHandler(config);
+        this.hooks = new HookHandler(this);
         this.permissions = new PermissionHandler(this);
         
         events().register(new CauldronPowderDropListener(this));
@@ -58,6 +61,8 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
     public Config config() { return initialized(config); }
     
     public EffectHandler effects() { return initialized(effects); }
+    
+    public HookHandler hooks() { return initialized(hooks); }
     
     public PermissionHandler permissions() { return initialized(permissions); }
 }
