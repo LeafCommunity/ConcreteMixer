@@ -7,20 +7,28 @@
  */
 package community.leaf.survival.concretemixer.hooks;
 
+import com.github.zafarkhaja.semver.Version;
 import community.leaf.survival.concretemixer.ConcreteMixerPlugin;
+import community.leaf.survival.concretemixer.util.Versions;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.function.Supplier;
 
 public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
 {
+    private static final String GRIEF_PREVENTION = "GriefPrevention";
+    private static final Version MINIMUM_VERSION = Version.forIntegers(16, 18);
+    
     private boolean failedToSendRestriction = false;
+    private @NullOr Version griefPreventionVersion = null;
+    
     private final ConcreteMixerPlugin plugin;
     
     public GriefPreventionCauldronAccessHook(ConcreteMixerPlugin plugin)
@@ -31,7 +39,21 @@ public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
     @Override
     public boolean isEnabled()
     {
-        return plugin.getServer().getPluginManager().isPluginEnabled("GriefPrevention");
+        @NullOr Plugin gp = plugin.getServer().getPluginManager().getPlugin(GRIEF_PREVENTION);
+        if (gp == null || !gp.isEnabled()) { return false; }
+        
+        if (griefPreventionVersion == null)
+        {
+            griefPreventionVersion = Versions.parse(gp.getDescription().getVersion()).orElse(Versions.ZERO);
+            
+            if (griefPreventionVersion.lessThan(MINIMUM_VERSION))
+            {
+                plugin.getLogger().warning("Your version of GriefPrevention is outdated.");
+                plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
+            }
+        }
+        
+        return griefPreventionVersion.greaterThanOrEqualTo(MINIMUM_VERSION);
     }
     
     @Override

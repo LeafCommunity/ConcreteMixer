@@ -16,6 +16,7 @@ import community.leaf.configvalues.bukkit.YamlAccessor;
 import community.leaf.configvalues.bukkit.YamlValue;
 import community.leaf.configvalues.bukkit.data.Load;
 import community.leaf.configvalues.bukkit.data.YamlDataFile;
+import community.leaf.survival.concretemixer.util.Versions;
 import org.bukkit.Sound;
 
 import java.util.List;
@@ -24,20 +25,11 @@ import java.util.Optional;
 public class Config extends YamlDataFile
 {
     public static final YamlValue<Version> VERSION =
-        YamlValue.of(
-            "meta.config-version",
-            YamlAccessor.of(Adapter.of(
-                o -> {
-                    try { return Optional.of(Version.valueOf(String.valueOf(o))); }
-                    catch (RuntimeException ignored) { return Optional.empty(); }
-                },
-                version -> Optional.of(version.toString())
-            ))
-        )
-        .comments(
-            "Please do not modify this value (it's used to update the config)."
-        )
-        .maybe();
+        YamlValue.of("meta.config-version", Versions.YAML)
+            .comments(
+                "Please do not modify this value (it's used to update the config)."
+            )
+            .maybe();
     
     public static final DefaultYamlValue<Boolean> METRICS =
         YamlValue.ofBoolean("metrics.enabled")
@@ -111,8 +103,7 @@ public class Config extends YamlDataFile
         {
             if (isInvalid()) { return; }
             
-            Version zero = Version.forIntegers(0);
-            Version existing = get(VERSION).orElse(zero);
+            Version existing = get(VERSION).orElse(Versions.ZERO);
             boolean outdated = existing.lessThan(plugin.version());
             
             if (outdated) { set(VERSION, plugin.version()); }
@@ -124,7 +115,7 @@ public class Config extends YamlDataFile
             {
                 if (outdated)
                 {
-                    if (existing.greaterThan(zero))
+                    if (existing.greaterThan(Versions.ZERO))
                     {
                         plugin.getLogger().info("Updating config...");
                         backupThenSave(plugin.directory().resolve("backups"), "v" + existing);

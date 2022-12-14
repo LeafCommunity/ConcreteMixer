@@ -13,9 +13,13 @@ import community.leaf.survival.concretemixer.hooks.UniversalCauldronAccessHook;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
+import pl.tlinkowski.annotation.basic.NullOr;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class PermissionHandler
 {
@@ -38,8 +42,24 @@ public class PermissionHandler
     
     public boolean canAccessCauldron(Player player, Block cauldron)
     {
-        return cauldronAccessHooks.stream()
-            .filter(CauldronAccessHook::isEnabled)
-            .allMatch(hook -> hook.isCauldronAccessibleToPlayer(player, cauldron));
+        @NullOr List<CauldronAccessHook> exceptional = null;
+        
+        for (CauldronAccessHook hook : cauldronAccessHooks)
+        {
+            try
+            {
+                if (hook.isEnabled() && !hook.isCauldronAccessibleToPlayer(player, cauldron)) { return false; }
+            }
+            catch (RuntimeException e)
+            {
+                if (exceptional == null) { exceptional = new ArrayList<>(); }
+                exceptional.add(hook);
+                
+                plugin.getLogger().log(Level.WARNING, hook.getClass().getSimpleName(), e);
+            }
+        }
+        
+        if (exceptional != null) { exceptional.forEach(cauldronAccessHooks::remove); }
+        return true;
     }
 }
