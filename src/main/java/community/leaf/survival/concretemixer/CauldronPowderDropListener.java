@@ -12,6 +12,7 @@ import community.leaf.eventful.bukkit.CancellationPolicy;
 import community.leaf.eventful.bukkit.ListenerOrder;
 import community.leaf.eventful.bukkit.annotations.CancelledEvents;
 import community.leaf.eventful.bukkit.annotations.EventListener;
+import community.leaf.survival.concretemixer.metrics.TransformationsPerHour;
 import community.leaf.tasks.TaskContext;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,10 +39,12 @@ public class CauldronPowderDropListener implements Listener
     private final Map<UUID, TaskContext<BukkitTask>> transformationTasksByItemUuid = new HashMap<>();
     
     private final ConcreteMixerPlugin plugin;
+    private final TransformationsPerHour counter;
     
-    public CauldronPowderDropListener(ConcreteMixerPlugin plugin)
+    public CauldronPowderDropListener(ConcreteMixerPlugin plugin, TransformationsPerHour counter)
     {
         this.plugin = plugin;
+        this.counter = counter;
     }
     
     @EventListener
@@ -187,6 +190,7 @@ public class CauldronPowderDropListener implements Listener
                 item.setPickupDelay(10);
                 
                 plugin.effects().concreteTransform(cauldron);
+                counter.transformed(stack.getAmount());
                 
                 if (!lowerWaterLevel) { return; }
                 if (!(cauldron.getBlockData() instanceof Levelled levelled)) { return; }

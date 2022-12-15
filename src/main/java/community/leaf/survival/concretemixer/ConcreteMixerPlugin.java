@@ -10,8 +10,10 @@ package community.leaf.survival.concretemixer;
 import com.github.zafarkhaja.semver.Version;
 import community.leaf.eventful.bukkit.BukkitEventSource;
 import community.leaf.survival.concretemixer.hooks.HookHandler;
+import community.leaf.survival.concretemixer.metrics.TransformationsPerHour;
 import community.leaf.tasks.bukkit.BukkitTaskSource;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.tlinkowski.annotation.basic.NullOr;
@@ -36,12 +38,18 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
         this.effects = new EffectHandler(config);
         this.hooks = new HookHandler(this);
         this.permissions = new PermissionHandler(this);
-        
-        events().register(new CauldronPowderDropListener(this));
+    
+        TransformationsPerHour counter = new TransformationsPerHour(config);
+        events().register(new CauldronPowderDropListener(this, counter));
         
         if (config.getOrDefault(Config.METRICS))
         {
-            new Metrics(this, 15590);
+            Metrics metrics = new Metrics(this, 15590);
+            
+            metrics.addCustomChart(new SingleLineChart(
+                "transformations-per-hour",
+                counter::totalTransformationsInTheLastHour
+            ));
         }
     }
     
