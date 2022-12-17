@@ -46,7 +46,7 @@ public class TransformationsPerHour
         {
             Map.Entry<Instant, Integer> entry = it.next();
             
-            if (ChronoUnit.MINUTES.between(entry.getKey(), now) >= 60) { it.remove(); }
+            if (ChronoUnit.MINUTES.between(entry.getKey(), now) > 60) { it.remove(); }
             else { total += entry.getValue(); }
         }
         

@@ -10,17 +10,17 @@ package community.leaf.survival.concretemixer;
 import com.github.zafarkhaja.semver.Version;
 import com.rezzedup.util.constants.Aggregates;
 import com.rezzedup.util.constants.annotations.AggregatedResult;
-import com.rezzedup.util.valuables.Adapter;
 import community.leaf.configvalues.bukkit.DefaultYamlValue;
-import community.leaf.configvalues.bukkit.YamlAccessor;
 import community.leaf.configvalues.bukkit.YamlValue;
 import community.leaf.configvalues.bukkit.data.Load;
 import community.leaf.configvalues.bukkit.data.YamlDataFile;
+import community.leaf.configvalues.bukkit.migrations.Migration;
 import community.leaf.survival.concretemixer.util.Versions;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Config extends YamlDataFile
 {
@@ -32,7 +32,10 @@ public class Config extends YamlDataFile
             .maybe();
     
     public static final DefaultYamlValue<Boolean> METRICS =
-        YamlValue.ofBoolean("metrics.enabled")
+        YamlValue.ofBoolean("plugin.metrics")
+            .migrates(
+                Migration.move("metrics.enabled")
+            )
             .comments(
                 "May we collect anonymous usage metrics?",
                 "https://bstats.org/plugin/bukkit/ConcreteMixer/15590"
@@ -113,6 +116,8 @@ public class Config extends YamlDataFile
             
             if (isUpdated())
             {
+                removeEmptyConfigurationSections(data());
+                
                 if (outdated)
                 {
                     if (existing.greaterThan(Versions.ZERO))
@@ -133,5 +138,17 @@ public class Config extends YamlDataFile
                 }
             }
         });
+    }
+    
+    private void removeEmptyConfigurationSections(ConfigurationSection section)
+    {
+        for (String key : section.getKeys(false))
+        {
+            @NullOr ConfigurationSection child = section.getConfigurationSection(key);
+            if (child == null) { continue; }
+            
+            removeEmptyConfigurationSections(child);
+            if (child.getKeys(false).isEmpty()) { section.set(key, null); }
+        }
     }
 }
