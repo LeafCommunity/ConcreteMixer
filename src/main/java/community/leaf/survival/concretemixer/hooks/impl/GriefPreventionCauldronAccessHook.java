@@ -52,6 +52,10 @@ public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
                 plugin.getLogger().warning("Your version of GriefPrevention is out of date.");
                 plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
             }
+            else
+            {
+                plugin.getLogger().info("Respecting claimed cauldrons from GriefPrevention.");
+            }
         }
         
         return griefPreventionVersion.greaterThanOrEqualTo(MINIMUM_VERSION);
