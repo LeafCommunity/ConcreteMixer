@@ -6,7 +6,7 @@
   
   <groupId>community.leaf.survival</groupId>
   <artifactId>concretemixer</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   
   <name>ConcreteMixer</name>
   <inceptionYear>2022</inceptionYear>
@@ -16,14 +16,13 @@
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-  
+    
     <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  
+    
     <shade.relocation>community.leaf.survival.concretemixer.shaded</shade.relocation>
-  
-    <!-- License headers (uncomment build timestamp in 2023) -->
-    <license.header.year>${project.inceptionYear}<!---${maven.build.timestamp}--></license.header.year>
+    
+    <license.header.year>${project.inceptionYear}-${maven.build.timestamp}</license.header.year>
     <license.header.owner>RezzedUp and Contributors</license.header.owner>
     <license.header.url>https://github.com/LeafCommunity/ConcreteMixer</license.header.url>
   </properties>
