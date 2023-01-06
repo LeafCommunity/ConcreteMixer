@@ -8,6 +8,7 @@
 [![](https://img.shields.io/badge/Java-17-orange)](# "Java Version: 17")
 [![](https://img.shields.io/github/v/release/LeafCommunity/ConcreteMixer.svg?label=Release&color=ok)](https://github.com/LeafCommunity/ConcreteMixer/releases/latest "Latest Release")
 [![](https://img.shields.io/spiget/downloads/106707?color=yellow&label=Spigot%20Downloads)](https://www.spigotmc.org/resources/concretemixer.106707/ "Spigot Resource Page")
+[![](https://img.shields.io/modrinth/dt/ufdoTeFB?color=%2300af5c&label=Modrinth%20Downloads&logo=modrinth)](https://modrinth.com/plugin/ufdoTeFB "Modrinth Project Page")
 
 </div>
 
