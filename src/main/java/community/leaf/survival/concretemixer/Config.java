@@ -42,6 +42,14 @@ public class Config extends YamlDataFile
             )
             .defaults(true);
     
+    public static final DefaultYamlValue<Boolean> UPDATES =
+        YamlValue.ofBoolean("plugin.check-for-updates")
+            .comments(
+                "Can the plugin check for updates?",
+                "If an update is found, a notification will be sent to console."
+            )
+            .defaults(true);
+    
     public static final DefaultYamlValue<Boolean> REQUIRE_PERMISSION =
         YamlValue.ofBoolean("cauldrons.require-permission-node")
             .comments(

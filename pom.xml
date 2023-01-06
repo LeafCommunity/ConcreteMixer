@@ -73,6 +73,12 @@
       <artifactId>events-bukkit</artifactId>
       <version>0.4.0</version>
     </dependency>
+    <!-- LeafCommunity Evergreen Bukkit Server Version (via jitpack.io) -->
+    <dependency>
+      <groupId>community.leaf.evergreen</groupId>
+      <artifactId>bukkit-server-version</artifactId>
+      <version>0.0.1</version>
+    </dependency>
     <!-- LeafCommunity Tasks (via jitpack.io) -->
     <dependency>
       <groupId>community.leaf.tasks</groupId>

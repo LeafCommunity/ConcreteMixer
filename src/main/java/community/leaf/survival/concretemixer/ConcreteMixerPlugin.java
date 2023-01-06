@@ -28,6 +28,7 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
     private @NullOr EffectHandler effects;
     private @NullOr HookHandler hooks;
     private @NullOr PermissionHandler permissions;
+    private @NullOr UpdateChecker updates;
     
     @Override
     public void onEnable()
@@ -38,6 +39,7 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
         this.effects = new EffectHandler(config);
         this.hooks = new HookHandler(this);
         this.permissions = new PermissionHandler(this);
+        this.updates = new UpdateChecker(this);
     
         TransformationsPerHour counter = new TransformationsPerHour(config);
         events().register(new CauldronPowderDropListener(this, counter));
@@ -73,4 +75,6 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
     public HookHandler hooks() { return initialized(hooks); }
     
     public PermissionHandler permissions() { return initialized(permissions); }
+    
+    public UpdateChecker updates() { return initialized(updates); }
 }
