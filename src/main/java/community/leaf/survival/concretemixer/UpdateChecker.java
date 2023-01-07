@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.uwyn.urlencoder.UrlEncoder;
 import community.leaf.evergreen.bukkit.versions.MinecraftVersion;
 import community.leaf.survival.concretemixer.util.Strings;
 import community.leaf.survival.concretemixer.util.Versions;
@@ -21,11 +22,9 @@ import org.bukkit.scheduler.BukkitTask;
 import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,14 +99,13 @@ public class UpdateChecker
             "game_versions",
             supportedVersions.stream()
                 .map(ver -> "\"" + ver + "\"")
-                .map(quoted -> URLEncoder.encode(quoted, StandardCharsets.UTF_8))
                 .collect(Collectors.joining(",", "[", "]"))
         );
         
         String url = "https://api.modrinth.com/v2/project/%s/version?%s".formatted(
             MODRINTH_PROJECT_ID,
             params.entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .map(entry -> entry.getKey() + "=" + UrlEncoder.encode(entry.getValue(), "[,]"))
                 .collect(Collectors.joining("&"))
         );
         

@@ -61,6 +61,13 @@
       <artifactId>java-semver</artifactId>
       <version>0.9.0</version>
     </dependency>
+    <!-- URL Encoder (via maven-central) -->
+    <!-- https://github.com/gbevin/urlencoder -->
+    <dependency>
+      <groupId>com.uwyn</groupId>
+      <artifactId>urlencoder</artifactId>
+      <version>1.2.0</version>
+    </dependency>
     <!-- LeafCommunity ConfigValues (via jitpack.io) -->
     <dependency>
       <groupId>community.leaf.configvalues</groupId>
@@ -139,6 +146,10 @@
             <relocation>
               <pattern>com.rezzedup</pattern>
               <shadedPattern>${shade.relocation}.com.rezzedup</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.uwyn</pattern>
+              <shadedPattern>${shade.relocation}.com.uwyn</shadedPattern>
             </relocation>
             <relocation>
               <pattern>org.bstats</pattern>
