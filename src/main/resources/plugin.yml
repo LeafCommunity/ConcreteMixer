@@ -8,7 +8,15 @@ authors: [RezzedUp]
 description: ${project.description}
 website: ${project.url}
 
+commands:
+  concretemixer:
+    description: Display information about ConcreteMixer.
+    usage: /<command>
+
 permissions:
+  concretemixer.admin:
+    description: |
+      Lets admins reload ConcreteMixer's config.
   concretemixer.cauldrons:
     description: |
       Allows players to use cauldrons to create concrete.

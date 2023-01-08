@@ -20,6 +20,11 @@ public class PermissionHandler
         this.plugin = plugin;
     }
     
+    public boolean isAdmin(Permissible permissible)
+    {
+        return permissible.hasPermission("concretemixer.admin");
+    }
+    
     public boolean allowsConvertingConcretePowder(Permissible permissible)
     {
         return !plugin.config().getOrDefault(Config.REQUIRE_PERMISSION) || permissible.hasPermission("concretemixer.cauldrons");

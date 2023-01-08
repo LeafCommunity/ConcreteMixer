@@ -14,6 +14,7 @@ import community.leaf.survival.concretemixer.metrics.TransformationsPerHour;
 import community.leaf.tasks.bukkit.BukkitTaskSource;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.tlinkowski.annotation.basic.NullOr;
@@ -43,6 +44,11 @@ public class ConcreteMixerPlugin extends JavaPlugin implements BukkitEventSource
     
         TransformationsPerHour counter = new TransformationsPerHour(config);
         events().register(new CauldronPowderDropListener(this, counter));
+    
+        ConcreteMixerCommand command = new ConcreteMixerCommand(this);
+        PluginCommand executor = initialized(getCommand("concretemixer"));
+        executor.setExecutor(command);
+        executor.setTabCompleter(command);
         
         if (config.getOrDefault(Config.METRICS))
         {
