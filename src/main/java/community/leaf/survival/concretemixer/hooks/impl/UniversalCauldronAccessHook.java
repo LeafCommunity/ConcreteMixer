@@ -29,6 +29,12 @@ public class UniversalCauldronAccessHook implements CauldronAccessHook
     }
     
     @Override
+    public void reload()
+    {
+        // do nothing...
+    }
+    
+    @Override
     public boolean isEnabled()
     {
         return true;

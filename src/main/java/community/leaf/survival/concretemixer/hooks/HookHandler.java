@@ -31,7 +31,7 @@ public class HookHandler implements CauldronAccessHook
         register(new UniversalCauldronAccessHook(plugin));
         register(new GriefPreventionCauldronAccessHook(plugin));
         
-        isEnabled(); // initialize hooks & send any warnings to console immediately
+        reload(); // initialize hooks & send any warnings to console immediately
     }
     
     @SuppressWarnings("unchecked")
@@ -72,6 +72,31 @@ public class HookHandler implements CauldronAccessHook
     }
     
     @Override
+    public void reload()
+    {
+        plugin.getLogger().info("Loading hooks...");
+        int counter = 0;
+        
+        for (RegisteredHook<?> hook : allRegisteredHooks)
+        {
+            try
+            {
+                hook.enable();
+                hook.reload();
+                
+                if (hook.isEnabled()) { counter++; }
+            }
+            catch (RuntimeException e)
+            {
+                plugin.getLogger().log(Level.WARNING, hook.name(), e);
+                hook.disable();
+            }
+        }
+        
+        plugin.getLogger().info("Enabled " + counter + " hook(s).");
+    }
+    
+    @Override
     public boolean isEnabled()
     {
         boolean anyHookIsEnabled = false;
@@ -90,26 +115,5 @@ public class HookHandler implements CauldronAccessHook
         }
         
         return anyHookIsEnabled;
-    }
-    
-    private static class RegisteredHook<H extends Hook> implements Hook
-    {
-        private boolean enabled = true;
-        
-        private final H hook;
-        
-        private RegisteredHook(H hook)
-        {
-            this.hook = hook;
-        }
-        
-        public H get() { return hook; }
-        
-        public String name() { return hook.getClass().getSimpleName(); }
-        
-        @Override
-        public boolean isEnabled() { return enabled && hook.isEnabled(); }
-        
-        public void disable() { enabled = false; }
     }
 }

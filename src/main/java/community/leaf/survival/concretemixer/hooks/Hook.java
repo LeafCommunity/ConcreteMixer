@@ -9,5 +9,7 @@ package community.leaf.survival.concretemixer.hooks;
 
 public interface Hook
 {
+    void reload();
+    
     boolean isEnabled();
 }

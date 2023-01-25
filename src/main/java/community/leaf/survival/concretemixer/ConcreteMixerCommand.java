@@ -12,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
+import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ConcreteMixerCommand implements TabExecutor
         this.plugin = plugin;
     }
     
-    private String prefix() { return "[" + plugin.getName() + "]"; }
+    private String prefix() { return "&f&l" + plugin.getName() + ".&r"; }
     
     private void message(CommandSender sender, String message)
     {
@@ -42,39 +43,76 @@ public class ConcreteMixerCommand implements TabExecutor
         {
             case "version", "ver" -> version(sender);
             case "reload" -> reload(sender);
-            default -> false;
+            default -> usage(sender);
         };
     }
     
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args)
     {
-        List<String> completions = new ArrayList<>();
+        List<String> suggestions = new ArrayList<>();
         
         if (args.length == 1)
         {
-            StringUtil.copyPartialMatches(args[0], List.of("version", "ver", "reload"), completions);
+            if (plugin.permissions().isAdmin(sender)) { suggestions.add("reload"); }
+            
+            suggestions.add("ver");
+            suggestions.add("version");
         }
         
+        List<String> completions = StringUtil.copyPartialMatches(args[0], suggestions, new ArrayList<>());
         completions.sort(String.CASE_INSENSITIVE_ORDER);
         return completions;
     }
     
+    private boolean usage(CommandSender sender)
+    {
+        if (plugin.permissions().isAdmin(sender))
+        {
+            message(sender, prefix() + "&6 Unknown command.");
+            return true;
+        }
+        else
+        {
+            return version(sender);
+        }
+    }
+    
     private boolean version(CommandSender sender)
     {
-        message(sender, prefix() + "&6 ConcreteMixer v" + plugin.version());
-        message(sender, prefix() + "&6&o Throw concrete powder into a cauldron... get concrete!");
+        message(sender, prefix() + "&6 ConcreteMixer v&e" + plugin.version());
+        
+        if (plugin.permissions().isAdmin(sender))
+        {
+            // Admin update notification (if available)
+            if (notifyIfUpdateAvailable(sender)) { return true; }
+        }
+        
+        message(sender, "&7→&8&o Throw concrete powder into a cauldron... get concrete!");
         return true;
     }
     
     private boolean reload(CommandSender sender)
     {
-        if (!plugin.permissions().isAdmin(sender)) { return false; }
+        if (!plugin.permissions().isAdmin(sender)) { return version(sender); }
+        
+        plugin.getLogger().info("Reloading...");
         
         plugin.config().reload();
         plugin.updates().reload();
+        plugin.hooks().reload();
         
         message(sender, prefix() + "&6 Reloaded.");
+        notifyIfUpdateAvailable(sender);
+        return true;
+    }
+    
+    private boolean notifyIfUpdateAvailable(CommandSender sender)
+    {
+        @NullOr String url = plugin.updates().latestUpdateUrl().orElse(null);
+        if (url == null) { return false; }
+        
+        message(sender, "&f→&6 Update available: &e&n" + url);
         return true;
     }
 }

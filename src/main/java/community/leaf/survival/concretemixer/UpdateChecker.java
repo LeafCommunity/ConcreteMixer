@@ -69,6 +69,13 @@ public class UpdateChecker
     
     public boolean isOutdated() { return latestUpdateVersion().isPresent(); }
     
+    public Optional<String> latestUpdateUrl()
+    {
+        return latestUpdateVersion().map(version ->
+            "https://modrinth.com/plugin/%s/version/%s".formatted(MODRINTH_PROJECT_ID, version)
+        );
+    }
+    
     public void end()
     {
         if (task != null) { task.cancel(); }
@@ -152,7 +159,7 @@ public class UpdateChecker
         }
         catch (Exception ignored) {}
     
-        plugin.sync().run(this::notifyIfUpdateAvailable);
+        plugin.sync().run(this::notifyConsoleIfUpdateAvailable);
     }
     
     private void print(String text)
@@ -160,14 +167,11 @@ public class UpdateChecker
         plugin.getServer().getConsoleSender().sendMessage("[%s] %s".formatted(plugin.getName(), text));
     }
     
-    public void notifyIfUpdateAvailable()
+    public void notifyConsoleIfUpdateAvailable()
     {
-        latestUpdateVersion().ifPresent(version ->
+        latestUpdateUrl().ifPresent(url ->
         {
-            String notification = Strings.colorful(
-                "&6An update is available &e@&f https://modrinth.com/plugin/%s/version/%s"
-                    .formatted(MODRINTH_PROJECT_ID, version)
-            );
+            String notification = Strings.colorful("&6An update is available &e@&f " + url);
             
             String bar = "-".repeat(ChatColor.stripColor(notification).length());
             String boundary = Strings.colorful("&6" + bar);

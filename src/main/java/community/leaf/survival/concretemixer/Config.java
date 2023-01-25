@@ -37,8 +37,9 @@ public class Config extends YamlDataFile
                 Migration.move("metrics.enabled")
             )
             .comments(
-                "May we collect anonymous usage metrics?",
-                "https://bstats.org/plugin/bukkit/ConcreteMixer/15590"
+                "Can the plugin submit anonymous usage metrics to bStats?",
+                "https://bstats.org/plugin/bukkit/ConcreteMixer/15590",
+                "(Global bStats settings can be found in: /plugins/bStats/config.yml)"
             )
             .defaults(true);
     
@@ -113,6 +114,8 @@ public class Config extends YamlDataFile
         reloadsWith(() ->
         {
             if (isInvalid()) { return; }
+            
+            plugin.getLogger().info("Loading config...");
             
             Version existing = get(VERSION).orElse(Versions.ZERO);
             boolean outdated = existing.lessThan(plugin.version());

@@ -28,7 +28,7 @@ public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
     private static final Version MINIMUM_VERSION = Version.forIntegers(16, 18);
     
     private boolean failedToSendRestriction = false;
-    private @NullOr Version griefPreventionVersion = null;
+    private Version griefPreventionVersion = Versions.ZERO;
     
     private final ConcreteMixerPlugin plugin;
     
@@ -38,26 +38,30 @@ public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
     }
     
     @Override
+    public void reload()
+    {
+        failedToSendRestriction = false;
+        griefPreventionVersion = Versions.ZERO;
+        
+        @NullOr Plugin gp = plugin.getServer().getPluginManager().getPlugin(GRIEF_PREVENTION);
+        if (gp == null || !gp.isEnabled()) { return; }
+    
+        griefPreventionVersion = Versions.parse(gp.getDescription().getVersion()).orElse(Versions.ZERO);
+    
+        if (griefPreventionVersion.lessThan(MINIMUM_VERSION))
+        {
+            plugin.getLogger().warning("Your version of GriefPrevention is out of date.");
+            plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
+        }
+        else
+        {
+            plugin.getLogger().info("Respecting claimed cauldrons from GriefPrevention.");
+        }
+    }
+    
+    @Override
     public boolean isEnabled()
     {
-        @NullOr Plugin gp = plugin.getServer().getPluginManager().getPlugin(GRIEF_PREVENTION);
-        if (gp == null || !gp.isEnabled()) { return false; }
-        
-        if (griefPreventionVersion == null)
-        {
-            griefPreventionVersion = Versions.parse(gp.getDescription().getVersion()).orElse(Versions.ZERO);
-            
-            if (griefPreventionVersion.lessThan(MINIMUM_VERSION))
-            {
-                plugin.getLogger().warning("Your version of GriefPrevention is out of date.");
-                plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
-            }
-            else
-            {
-                plugin.getLogger().info("Respecting claimed cauldrons from GriefPrevention.");
-            }
-        }
-        
         return griefPreventionVersion.greaterThanOrEqualTo(MINIMUM_VERSION);
     }
     
