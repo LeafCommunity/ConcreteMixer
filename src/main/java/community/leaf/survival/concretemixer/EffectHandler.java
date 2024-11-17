@@ -7,10 +7,10 @@
  */
 package community.leaf.survival.concretemixer;
 
+import com.cryptomorin.xseries.particles.XParticle;
 import community.leaf.configvalues.bukkit.DefaultYamlValue;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -72,7 +72,7 @@ public class EffectHandler {
 		double waterHeight = 0.9 - (0.1875 * (3 - ((Levelled) cauldron.getBlockData()).getLevel()));
 		
 		cauldron.getWorld().spawnParticle(
-			Particle.WATER_SPLASH,
+			XParticle.SPLASH.get(),
 			cauldron.getLocation().getBlockX() + 0.5,
 			cauldron.getLocation().getBlockY() + waterHeight,
 			cauldron.getLocation().getBlockZ() + 0.5,
@@ -89,7 +89,7 @@ public class EffectHandler {
 		}
 		
 		cauldron.getWorld().spawnParticle(
-			Particle.EXPLOSION_NORMAL,
+			XParticle.POOF.get(),
 			cauldron.getLocation().getBlockX() + 0.5,
 			cauldron.getLocation().getBlockY() + 1.0,
 			cauldron.getLocation().getBlockZ() + 0.5,

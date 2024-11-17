@@ -6,7 +6,7 @@
   
   <groupId>community.leaf.survival</groupId>
   <artifactId>concretemixer</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   
   <name>ConcreteMixer</name>
   <inceptionYear>2022</inceptionYear>
@@ -43,9 +43,16 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.19.3-R0.1-SNAPSHOT</version>
+      <version>1.21.3-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+		<!-- XSeries -->
+		<!-- https://github.com/CryptoMorin/XSeries/ -->
+		<dependency>
+			<groupId>com.github.cryptomorin</groupId>
+			<artifactId>XSeries</artifactId>
+			<version>11.3.0</version>
+		</dependency>
     <!-- Hook: GriefPrevention (via jitpack.io) -->
     <!-- https://github.com/TechFortress/GriefPrevention -->
     <dependency>
@@ -72,7 +79,7 @@
     <dependency>
       <groupId>community.leaf.configvalues</groupId>
       <artifactId>config-values-bukkit</artifactId>
-      <version>0.0.8</version>
+      <version>0.0.9</version>
     </dependency>
     <!-- LeafCommunity Eventful (via jitpack.io) -->
     <dependency>
@@ -84,7 +91,7 @@
     <dependency>
       <groupId>community.leaf.evergreen</groupId>
       <artifactId>bukkit-server-version</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.2</version>
     </dependency>
     <!-- LeafCommunity Tasks (via jitpack.io) -->
     <dependency>
@@ -131,6 +138,10 @@
           <createDependencyReducedPom>false</createDependencyReducedPom>
           <minimizeJar>true</minimizeJar>
           <relocations>
+						<relocation>
+							<pattern>com.cryptomorin</pattern>
+							<shadedPattern>${shade.relocation}.com.cryptomorin</shadedPattern>
+						</relocation>
             <relocation>
               <pattern>com.github</pattern>
               <shadedPattern>${shade.relocation}.com.github</shadedPattern>
