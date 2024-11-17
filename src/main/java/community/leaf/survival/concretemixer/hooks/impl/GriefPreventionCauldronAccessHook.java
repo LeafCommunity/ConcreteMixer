@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022-2023, RezzedUp and Contributors <https://github.com/LeafCommunity/ConcreteMixer>
+ * Copyright © 2022-2024, RezzedUp and Contributors <https://github.com/LeafCommunity/ConcreteMixer>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -22,66 +22,69 @@ import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.function.Supplier;
 
-public class GriefPreventionCauldronAccessHook implements CauldronAccessHook
-{
-    private static final String GRIEF_PREVENTION = "GriefPrevention";
-    private static final Version MINIMUM_VERSION = Version.forIntegers(16, 18);
-    
-    private boolean failedToSendRestriction = false;
-    private Version griefPreventionVersion = Versions.ZERO;
-    
-    private final ConcreteMixerPlugin plugin;
-    
-    public GriefPreventionCauldronAccessHook(ConcreteMixerPlugin plugin)
-    {
-        this.plugin = plugin;
-    }
-    
-    @Override
-    public void reload()
-    {
-        failedToSendRestriction = false;
-        griefPreventionVersion = Versions.ZERO;
-        
-        @NullOr Plugin gp = plugin.getServer().getPluginManager().getPlugin(GRIEF_PREVENTION);
-        if (gp == null || !gp.isEnabled()) { return; }
-    
-        griefPreventionVersion = Versions.parse(gp.getDescription().getVersion()).orElse(Versions.ZERO);
-    
-        if (griefPreventionVersion.lessThan(MINIMUM_VERSION))
-        {
-            plugin.getLogger().warning("Your version of GriefPrevention is out of date.");
-            plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
-        }
-        else
-        {
-            plugin.getLogger().info("Respecting claimed cauldrons from GriefPrevention.");
-        }
-    }
-    
-    @Override
-    public boolean isEnabled()
-    {
-        return griefPreventionVersion.greaterThanOrEqualTo(MINIMUM_VERSION);
-    }
-    
-    @Override
-    public boolean isCauldronAccessibleToPlayer(Player player, Block cauldron)
-    {
-        // - - - Player can access - - -
-        @NullOr Claim claim = GriefPrevention.instance.dataStore.getClaimAt(cauldron.getLocation(), false, null);
-        if (claim == null) { return true; } // no claim
-        
-        @NullOr Supplier<String> restriction = claim.checkPermission(player, ClaimPermission.Inventory, null);
-        if (restriction == null) { return true; } // allowed
-        
-        // - - - Player cannot access - - -
-        if (failedToSendRestriction) { return false; } // not allowed & couldn't send failure message, so skip it.
-        
-        // Send restriction message as if it came from GriefPrevention itself.
-        // RED == TextMode.Err, which is package private for whatever reason.
-        try { GriefPrevention.sendMessage(player, ChatColor.RED, restriction.get()); }
-        catch (Exception ignored) { failedToSendRestriction = true; } // future proofing! :)
-        return false; // not allowed
-    }
+public class GriefPreventionCauldronAccessHook implements CauldronAccessHook {
+	private static final String GRIEF_PREVENTION = "GriefPrevention";
+	private static final Version MINIMUM_VERSION = Version.forIntegers(16, 18);
+	
+	private boolean failedToSendRestriction = false;
+	private Version griefPreventionVersion = Versions.ZERO;
+	
+	private final ConcreteMixerPlugin plugin;
+	
+	public GriefPreventionCauldronAccessHook(ConcreteMixerPlugin plugin) {
+		this.plugin = plugin;
+	}
+	
+	@Override
+	public void reload() {
+		failedToSendRestriction = false;
+		griefPreventionVersion = Versions.ZERO;
+		
+		@NullOr Plugin gp = plugin.getServer().getPluginManager().getPlugin(GRIEF_PREVENTION);
+		if (gp == null || !gp.isEnabled()) {
+			return;
+		}
+		
+		griefPreventionVersion = Versions.parse(gp.getDescription().getVersion()).orElse(Versions.ZERO);
+		
+		if (griefPreventionVersion.lessThan(MINIMUM_VERSION)) {
+			plugin.getLogger().warning("Your version of GriefPrevention is out of date.");
+			plugin.getLogger().warning("Please update to at least version 16.18 in order to respect claimed cauldrons.");
+		} else {
+			plugin.getLogger().info("Respecting claimed cauldrons from GriefPrevention.");
+		}
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return griefPreventionVersion.greaterThanOrEqualTo(MINIMUM_VERSION);
+	}
+	
+	@Override
+	public boolean isCauldronAccessibleToPlayer(Player player, Block cauldron) {
+		// - - - Player can access - - -
+		@NullOr Claim claim = GriefPrevention.instance.dataStore.getClaimAt(cauldron.getLocation(), false, null);
+		if (claim == null) {
+			return true;
+		} // no claim
+		
+		@NullOr Supplier<String> restriction = claim.checkPermission(player, ClaimPermission.Inventory, null);
+		if (restriction == null) {
+			return true;
+		} // allowed
+		
+		// - - - Player cannot access - - -
+		if (failedToSendRestriction) {
+			return false;
+		} // not allowed & couldn't send failure message, so skip it.
+		
+		// Send restriction message as if it came from GriefPrevention itself.
+		// RED == TextMode.Err, which is package private for whatever reason.
+		try {
+			GriefPrevention.sendMessage(player, ChatColor.RED, restriction.get());
+		} catch (Exception ignored) {
+			failedToSendRestriction = true;
+		} // future proofing! :)
+		return false; // not allowed
+	}
 }

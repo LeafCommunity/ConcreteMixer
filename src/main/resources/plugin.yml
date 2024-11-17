@@ -2,9 +2,9 @@ main: community.leaf.survival.concretemixer.ConcreteMixerPlugin
 name: ${project.name}
 version: ${project.version}
 api-version: 1.17
-softdepend: [GriefPrevention]
+softdepend: [ GriefPrevention ]
 
-authors: [RezzedUp]
+authors: [ RezzedUp ]
 description: ${project.description}
 website: ${project.url}
 
