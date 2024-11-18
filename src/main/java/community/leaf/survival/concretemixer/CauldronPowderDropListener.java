@@ -13,6 +13,7 @@ import community.leaf.eventful.bukkit.ListenerOrder;
 import community.leaf.eventful.bukkit.annotations.CancelledEvents;
 import community.leaf.eventful.bukkit.annotations.EventListener;
 import community.leaf.survival.concretemixer.metrics.TransformationsPerHour;
+import community.leaf.survival.concretemixer.util.internal.ConcreteDebug;
 import community.leaf.tasks.TaskContext;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,6 +33,7 @@ import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CauldronPowderDropListener implements Listener {
@@ -58,6 +60,7 @@ public class CauldronPowderDropListener implements Listener {
 			return;
 		}
 		
+		ConcreteDebug.debugItem("Player drop", item);
 		transformConcretePowder(item);
 	}
 	
@@ -73,6 +76,7 @@ public class CauldronPowderDropListener implements Listener {
 				aggregate.setThrower(piece.getThrower());
 			}
 			
+			ConcreteDebug.debugItem("Merge", aggregate);
 			transformConcretePowder(aggregate);
 		}
 	}
@@ -137,6 +141,7 @@ public class CauldronPowderDropListener implements Listener {
 			plugin.sync().delay(2).ticks().every(2).ticks().run(task ->
 			{
 				Block cauldron = item.getLocation().getBlock();
+				Material material = item.getItemStack().getType();
 				
 				// Outside the cauldron, dropping in ... (or not)
 				if (cauldron.getType() != Material.WATER_CAULDRON) {
@@ -163,12 +168,43 @@ public class CauldronPowderDropListener implements Listener {
 					}
 				}
 				
+				// TODO: more sophisticated merging
+				// Attempt to merge item stacks
+				if (item.getItemStack().getAmount() == 1) {
+					for (Entity nearby : item.getNearbyEntities(0.5, 0.5, 0.5)) {
+						if (!(nearby instanceof Item cooking)) {
+							continue;
+						}
+						if (!transformationTasksByItemUuid.containsKey(cooking.getUniqueId())) {
+							continue;
+						}
+						if (!Objects.equals(item.getThrower(), cooking.getThrower())) {
+							continue;
+						}
+						
+						ItemStack cooked = cooking.getItemStack();
+						if (cooked.getAmount() >= 64 || cooked.getType() != material) {
+							continue;
+						}
+						if (plugin.events().call(new ItemMergeEvent(item, cooking)).isCancelled()) {
+							continue; // merge cancelled, try another neighbor
+						}
+						
+						cooked.setAmount(cooked.getAmount() + 1);
+						item.remove();
+						
+						cancel(item, task);
+						return;
+					}
+				}
+				
 				if (iterations.inside == 1) {
 					item.setPickupDelay(40);
 					plugin.effects().cauldronSplashSound(item.getLocation());
 				}
 				
-				if (iterations.inside < 15) {
+				 if (iterations.inside < 15) {
+//				if (iterations.inside < 30) {
 					plugin.effects().cauldronSplashParticles(cauldron);
 					return;
 				}
@@ -176,7 +212,7 @@ public class CauldronPowderDropListener implements Listener {
 				// Done with this task... it's finally time to transform the powder!
 				cancel(item, task);
 				
-				@NullOr Concrete concrete = Concrete.ofPowder(item.getItemStack().getType()).orElse(null);
+				@NullOr Concrete concrete = Concrete.ofPowder(material).orElse(null);
 				if (concrete == null) {
 					return;
 				}
