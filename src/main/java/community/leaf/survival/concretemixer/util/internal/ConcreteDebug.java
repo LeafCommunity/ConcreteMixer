@@ -18,10 +18,24 @@ import org.bukkit.Material;
 import org.bukkit.entity.Item;
 
 import java.awt.*;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class ConcreteDebug {
 	private ConcreteDebug() {}
+	
+	public static final boolean ENABLED = Boolean.parseBoolean(
+		System.getProperty("community.leaf.survival.concretemixer.debug")
+	);
+	
+	static {
+		if (ENABLED) {
+			Logger logger = Logger.getLogger(ConcreteDebug.class.getCanonicalName());
+			logger.warning("- - - - - - - - - -");
+			logger.warning("Debugging enabled.");
+			logger.warning("- - - - - - - - - -");
+		}
+	}
 	
 	private static ChatColor chatColorOf(DyeColor color) {
 		return ChatColor.of(new Color(color.getColor().asRGB()));
@@ -44,6 +58,10 @@ public class ConcreteDebug {
 	}
 	
 	public static void debugItem(String message, Item item) {
+		if (!ENABLED) {
+			return;
+		}
+		
 		var material = item.getItemStack().getType();
 		var color = chatColorOf(material);
 		

@@ -41,10 +41,19 @@ public class CauldronPowderDropListener implements Listener {
 	
 	private final ConcreteMixerPlugin plugin;
 	private final TransformationsPerHour counter;
+	private final boolean experimentalItemMerging;
 	
 	public CauldronPowderDropListener(ConcreteMixerPlugin plugin, TransformationsPerHour counter) {
 		this.plugin = plugin;
 		this.counter = counter;
+		
+		this.experimentalItemMerging = ConcreteDebug.ENABLED || Boolean.parseBoolean(System.getProperty(
+			"community.leaf.survival.concretemixer.EnableExperimentalItemMerging"
+		));
+		
+		if (experimentalItemMerging) {
+			plugin.getLogger().info("Experimental item merging enabled.");
+		}
 	}
 	
 	@EventListener
@@ -170,7 +179,7 @@ public class CauldronPowderDropListener implements Listener {
 				
 				// TODO: more sophisticated merging
 				// Attempt to merge item stacks
-				if (item.getItemStack().getAmount() == 1) {
+				if (experimentalItemMerging && item.getItemStack().getAmount() == 1) {
 					for (Entity nearby : item.getNearbyEntities(0.5, 0.5, 0.5)) {
 						if (!(nearby instanceof Item cooking)) {
 							continue;
@@ -204,7 +213,6 @@ public class CauldronPowderDropListener implements Listener {
 				}
 				
 				 if (iterations.inside < 15) {
-//				if (iterations.inside < 30) {
 					plugin.effects().cauldronSplashParticles(cauldron);
 					return;
 				}
